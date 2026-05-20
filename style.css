@@ -1,0 +1,179 @@
+/* ============================================================
+   CORRECTIV-style embed map — full-viewport with overlay panels
+   ============================================================ */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  background: #fff;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Common look for the three overlay panels (controls / popup / legend) */
+.map-overlay-element {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  padding: 10px 12px;
+  color: #222;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* --- Top-left: period buttons + mode toggle --- */
+#period-buttons {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  max-width: 320px;
+}
+
+#period-title {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* --- 2-handle range slider (noUiSlider) --- */
+#year-slider {
+  margin: 22px 12px 38px;   /* room above for tooltips, below for pip labels */
+}
+.noUi-target {
+  background: #e9e9e9;
+  border: none;
+  box-shadow: none;
+  height: 4px;
+}
+.noUi-connect {
+  background: #6e8b3e;
+}
+.noUi-handle {
+  background: #2a2a2a;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  width: 14px !important;
+  height: 14px !important;
+  top: -6px !important;
+  right: -7px !important;
+  cursor: grab;
+}
+.noUi-handle::before, .noUi-handle::after { display: none; }
+.noUi-tooltip {
+  font-size: 11px;
+  padding: 2px 5px;
+  background: #2a2a2a;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  bottom: 140%;
+}
+.noUi-pips-horizontal {
+  height: 24px;
+  padding: 6px 0 0;
+}
+.noUi-marker-horizontal.noUi-marker {
+  height: 4px;
+  background: #ccc;
+}
+.noUi-value {
+  font-size: 10px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.mode-row {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #555;
+}
+.mode-row label { cursor: pointer; user-select: none; }
+.mode-row input { vertical-align: middle; margin-right: 3px; }
+
+/* --- Bottom-left: click popup with the trend chart --- */
+#chart-panel-wrapper {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 5;
+  max-width: 420px;
+}
+
+#data-popup {
+  position: relative;
+}
+
+#close-button {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+}
+#close-button:hover { color: #222; }
+
+.info-sentence {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  color: #333;
+}
+.info-sentence strong { color: #111; }
+
+#popup_chart svg {
+  display: block;
+  width: 100%;
+  height: 130px;
+}
+
+/* --- Bottom-right: legend + attribution --- */
+#map-legend-wrapper {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 5;
+  max-width: 340px;
+}
+
+#map_legend {
+  margin-bottom: 6px;
+}
+#map_legend svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.legend-number {
+  font-size: 8px;
+  fill: #555;
+}
+
+#map-footer {
+  font-size: 10px;
+  color: #555;
+  line-height: 1.3;
+}
+#map-footer a {
+  color: #555;
+  text-decoration: underline;
+}
+
+/* MapLibre attribution: small + unobtrusive in the bottom-right */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}

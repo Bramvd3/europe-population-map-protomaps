@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+  CORRECTIV-style embed map of European population change.
+
+  Pure HTML/JS/CSS — no build step. Loads MapLibre GL JS + D3 from CDN,
+  fetches lau.geojson, data.json and countries.geojson from ./data/ (which
+  are symlinks to ../static/* so we never duplicate the heavy data files).
+
+  Serve with:  python -m http.server 8000   (from this folder)
+  Or drop the folder behind any static file host and embed in an <iframe>.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>European population change since 1961</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Map fills the whole viewport (or iframe) -->
+  <div id="map"></div>
+
+  <!-- Period slider + mode toggle, top-left, overlayed on the map -->
+  <div id="period-buttons" class="map-overlay-element">
+    <p id="period-title">Population change in Europe between 1961 and 2024</p>
+    <div id="year-slider"></div>
+    <div class="mode-row">
+      <label><input type="radio" name="mode" value="pct" checked> % change</label>
+      <label><input type="radio" name="mode" value="abs"> Δ population</label>
+    </div>
+  </div>
+
+  <!-- Click popup with the trend chart, bottom-left -->
+  <div id="chart-panel-wrapper">
+    <div id="chart-panel" class="map-overlay-element" style="display: none;">
+      <div id="data-popup">
+        <a id="close-button">×</a>
+        <p class="info-sentence" id="info-sentence"></p>
+        <div id="popup_chart"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend + attribution, bottom-right -->
+  <div id="map-legend-wrapper">
+    <div class="map-overlay-element">
+      <div id="map_legend"></div>
+      <div id="map-footer">
+        Data from
+        <a href="https://data.jrc.ec.europa.eu/dataset/37fcacbf-12e2-4b31-b1af-83117a74b2c7"
+           target="_blank" rel="noopener">JRC</a>.
+        Map inspired by
+        <a href="https://correctiv.org/en/europe/" target="_blank" rel="noopener">CORRECTIV.Europe</a>.
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
