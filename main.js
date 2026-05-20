@@ -79,11 +79,24 @@ function formatAbsLabel(v) {
 }
 
 // ---- Map setup ------------------------------------------------------------
-// OpenFreeMap Liberty — same fast Cloudflare-hosted vector tiles as Positron,
-// but with a slightly richer palette: blue sea (rgb 158,189,255), blue river
-// lines (#a0c8f0), pastel-green parks and woods. Subtle enough that the
-// choropleth still pops on top, lively enough to feel like a real map.
-const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
+// MapTiler basemap — same provider CORRECTIV uses (look at their attribution).
+// We pick the `bright-v2` stock style: OSM-Bright-inspired, with blue water,
+// soft green parks, light yellow built-up areas. Free tier covers 100k tile
+// requests/month — plenty for an article embed.
+//
+// ┌──────────────────────────────────────────────────────────────────────────┐
+// │  TO ACTIVATE:                                                            │
+// │   1. Sign up at https://www.maptiler.com (free, ~60 seconds)             │
+// │   2. Copy your API key from https://cloud.maptiler.com/account/keys      │
+// │   3. Replace the value of MAPTILER_KEY below                             │
+// │   4. (Optional but recommended) restrict the key to your GitHub Pages    │
+// │      origin in the MapTiler dashboard so nobody else can use it          │
+// └──────────────────────────────────────────────────────────────────────────┘
+const MAPTILER_KEY = "PASTE_YOUR_MAPTILER_KEY_HERE";
+const MAPTILER_STYLE = "bright-v2";   // try: basic-v2, dataviz, streets-v2, voyager
+const MAP_STYLE = MAPTILER_KEY === "PASTE_YOUR_MAPTILER_KEY_HERE"
+  ? "https://tiles.openfreemap.org/styles/liberty"   // free fallback while no key set
+  : `https://api.maptiler.com/maps/${MAPTILER_STYLE}/style.json?key=${MAPTILER_KEY}`;
 // In OpenFreeMap, country borders are a single layer (`boundary_2` = OSM
 // admin level 2). No separate "halo" sublayer to hide.
 const BASE_COUNTRY_BORDER_LAYER = "boundary_2";
