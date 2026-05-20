@@ -79,19 +79,15 @@ function formatAbsLabel(v) {
 }
 
 // ---- Map setup ------------------------------------------------------------
-// CARTO Positron vector style — same family as the raster tiles we used
-// before, but every basemap layer (water, roads, borders, labels) is its own
-// vector layer we can slot our choropleth between. In particular, the country
-// outline (`boundary_country_outline`) renders crisply on top of our fills,
-// so we no longer need a custom border overlay.
-const MAP_STYLE = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
-// CARTO Positron uses TWO country border layers:
-//   - boundary_country_outline  → 8 px light halo, only visible at zoom ≥ 6
-//   - boundary_country_inner    → 1–1.5 px thin line, visible at all zooms
-// The visible "border" people perceive is the inner one. We darken that and
-// hide the halo so the result reads cleanly black.
-const BASE_COUNTRY_BORDER_LAYER = "boundary_country_inner";
-const BASE_COUNTRY_BORDER_HALO_LAYER = "boundary_country_outline";
+// OpenFreeMap Positron — community-maintained OSM-derived vector tiles served
+// from Cloudflare's CDN. Free, no API key, and *much* faster on zoom/pan than
+// CARTO's public endpoint (which is the slowdown CORRECTIV avoids with their
+// MapTiler hosting).  We can still slot our choropleth between the basemap
+// layers via beforeId.
+const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
+// In OpenFreeMap, country borders are a single layer (`boundary_2` = OSM
+// admin level 2). No separate "halo" sublayer to hide.
+const BASE_COUNTRY_BORDER_LAYER = "boundary_2";
 
 async function init() {
   // Load LAU geojson + per-region data in parallel. (We used to also fetch
@@ -125,14 +121,10 @@ async function init() {
   });
 
   map.on("load", () => {
-    // Darken the visible (inner) border line + hide the soft pink halo so
-    // the result reads as a clean black border, like CORRECTIV.
+    // Darken the basemap's country border to dark grey, like CORRECTIV's.
     if (map.getLayer(BASE_COUNTRY_BORDER_LAYER)) {
       map.setPaintProperty(BASE_COUNTRY_BORDER_LAYER, "line-color", "#333");
       map.setPaintProperty(BASE_COUNTRY_BORDER_LAYER, "line-width", 1.2);
-    }
-    if (map.getLayer(BASE_COUNTRY_BORDER_HALO_LAYER)) {
-      map.setPaintProperty(BASE_COUNTRY_BORDER_HALO_LAYER, "line-opacity", 0);
     }
 
     map.addSource("lau", {
