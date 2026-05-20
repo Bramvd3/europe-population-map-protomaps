@@ -293,6 +293,7 @@ function setupYearSlider() {
 
 // ---- Interactions ---------------------------------------------------------
 let hoveredId = null;
+let pinnedId = null;   // gisco_id locked in via click; null = popup follows hover
 
 function attachInteractions() {
   map.on("mousemove", "lau-fill", (e) => {
@@ -305,6 +306,11 @@ function attachInteractions() {
     hoveredId = id;
     map.setFeatureState({ source: "lau", sourceLayer: "lau", id }, { hover: true });
     map.getCanvas().style.cursor = "pointer";
+    // Hover-preview the popup; if a region is pinned via click the pinned
+    // chart stays and hover just updates the highlight, like CORRECTIV.
+    if (pinnedId == null) {
+      showPopup(id);
+    }
   });
   map.on("mouseleave", "lau-fill", () => {
     if (hoveredId != null) {
@@ -312,10 +318,15 @@ function attachInteractions() {
       hoveredId = null;
     }
     map.getCanvas().style.cursor = "";
+    // Tear down the hover-preview when leaving the map; keep a pinned one.
+    if (pinnedId == null) {
+      document.getElementById("chart-panel").style.display = "none";
+    }
   });
   map.on("click", "lau-fill", (e) => {
     if (!e.features || e.features.length === 0) return;
-    showPopup(e.features[0].id);
+    pinnedId = e.features[0].id;
+    showPopup(pinnedId);
   });
 
   setupYearSlider();
@@ -328,9 +339,10 @@ function attachInteractions() {
     });
   });
 
-  // Close button
+  // Close button — clears the pin too so hover-preview resumes.
   document.getElementById("close-button").addEventListener("click", (e) => {
     e.preventDefault();
+    pinnedId = null;
     document.getElementById("chart-panel").style.display = "none";
   });
 }
