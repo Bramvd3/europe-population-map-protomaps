@@ -22,6 +22,63 @@ html, body {
   overflow: visible;
 }
 
+/* ---- Preload overlay -------------------------------------------------- */
+/* Shown while we silently walk through every step's camera position to
+   warm the Protomaps + PMTiles caches. Fades out once tiles are ready. */
+.preload-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(245, 245, 245, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+  pointer-events: auto;
+}
+.preload-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+.preload-card {
+  background: #fff;
+  padding: 28px 32px;
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  min-width: 280px;
+}
+.preload-card h2 {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.preload-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+.preload-progress {
+  margin: 14px 0 8px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.preload-progress-fill {
+  height: 100%;
+  background: #1c1c1c;
+  width: 0;
+  transition: width 0.4s ease;
+}
+.preload-count {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: #888;
+}
+
 /* ---- Sticky map container --------------------------------------------- */
 #map-container {
   position: fixed;

@@ -156,8 +156,46 @@ function findCountryBorderLayer() {
   );
 }
 
+// ---- Preload overlay ----------------------------------------------------
+function showPreloadOverlay() {
+  const div = document.createElement("div");
+  div.className = "preload-overlay";
+  div.innerHTML = `
+    <div class="preload-card">
+      <h2>Even geduld…</h2>
+      <p>De kaart wordt geladen.</p>
+      <div class="preload-progress">
+        <div class="preload-progress-fill"></div>
+      </div>
+      <p class="preload-count">0 / ${STEPS.length}</p>
+    </div>
+  `;
+  document.body.appendChild(div);
+  return {
+    el: div,
+    setProgress(done, total) {
+      div.querySelector(".preload-progress-fill").style.width =
+        (done / total * 100) + "%";
+      div.querySelector(".preload-count").textContent = `${done} / ${total}`;
+    },
+    hide() {
+      div.classList.add("fade-out");
+      setTimeout(() => div.remove(), 600);
+    },
+  };
+}
+
+// Wait until the map has no in-flight tile requests. Resolves immediately
+// if everything is already loaded.
+function waitForIdle() {
+  if (map.areTilesLoaded()) return Promise.resolve();
+  return new Promise((r) => map.once("idle", r));
+}
+
 // ---- Init ---------------------------------------------------------------
 async function init() {
+  const overlay = showPreloadOverlay();
+
   const protocol = new pmtiles.Protocol();
   maplibregl.addProtocol("pmtiles", protocol.tile);
 
@@ -290,27 +328,56 @@ async function init() {
     }, beforeId);
 
     // First refreshBins after LAU source has actually loaded (avoids the
-    // first-paint feature-state race; same logic as the main embed).
+    // first-paint feature-state race; same logic as the main embed). Once
+    // bins are set we trigger the per-step tile preload, then unveil the
+    // story.
     function onceLauLoaded(e) {
       if (e.sourceId !== "lau" || !map.isSourceLoaded("lau")) return;
       map.off("sourcedata", onceLauLoaded);
       refreshBins();
       map.triggerRepaint();
-      // Apply the very first step now that everything is ready
-      applyStep(STEPS[0]);
-      setupScrollama();
+      preloadAllStepsThenStart();
     }
     if (map.isSourceLoaded("lau")) {
       refreshBins();
       map.triggerRepaint();
-      applyStep(STEPS[0]);
-      setupScrollama();
+      preloadAllStepsThenStart();
     } else {
       map.on("sourcedata", onceLauLoaded);
     }
 
     drawLegend();
   });
+
+  // Walk through every step's camera position once, waiting for tiles to
+  // finish loading at each. After this completes both the Protomaps basemap
+  // tiles AND the LAU PMTiles byte-ranges are in the browser HTTP cache, so
+  // the actual scrolly flyTo's no longer have to fetch them — pans and
+  // zooms run smoothly without the white-tile flicker.
+  async function preloadAllStepsThenStart() {
+    try {
+      // Make sure the initial render finished before we start jumping
+      await waitForIdle();
+
+      for (let i = 0; i < STEPS.length; i++) {
+        const step = STEPS[i];
+        map.jumpTo({ center: step.center, zoom: step.zoom });
+        await waitForIdle();
+        overlay.setProgress(i + 1, STEPS.length);
+      }
+
+      // Cleanly reset to step 0 so the very first flyTo has nothing to do
+      applyStep(STEPS[0]);
+      await waitForIdle();
+    } catch (e) {
+      // If preload fails for any reason, fall back to just rendering step 0
+      console.warn("Preload error, continuing without:", e);
+      applyStep(STEPS[0]);
+    }
+
+    overlay.hide();
+    setupScrollama();
+  }
 }
 
 // ---- Bin refresh -------------------------------------------------------
