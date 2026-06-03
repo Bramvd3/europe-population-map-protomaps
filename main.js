@@ -180,6 +180,7 @@ async function init() {
     maxZoom: 12,
     attributionControl: { compact: true },
   });
+  window.__debugMap = map;   // TEMPORARY — for diagnosing the Oostende bug
 
   map.on("load", () => {
     // Find the basemap's country-border layer once, then reuse for both the
@@ -285,6 +286,24 @@ async function init() {
 
     refreshBins();
     attachInteractions();
+
+    // ---- TEMP DEBUG (Oostende discoloration bug) -------------------------
+    // After everything has settled, log: expected bin, stored feature-state,
+    // and any other features the source claims have gisco_id="BE_35013".
+    // Open DevTools → Console to read the report.
+    map.once("idle", () => {
+      const idx = dataByLocation.get("BE_35013");
+      const expected = binIndex(computeDelta(idx), mode === "pct" ? PCT_BINS : ABS_BINS);
+      const stored = map.getFeatureState({ source: "lau", sourceLayer: "lau", id: "BE_35013" });
+      let queriedCount = "n/a";
+      try {
+        queriedCount = map.querySourceFeatures("lau", {
+          sourceLayer: "lau",
+          filter: ["==", "gisco_id", "BE_35013"],
+        }).length;
+      } catch (_) {}
+      console.log("[OOSTENDE DEBUG]", { idx, expected_bin: expected, stored_state: stored, source_features_with_id: queriedCount });
+    });
   });
 }
 
