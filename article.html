@@ -17,28 +17,16 @@
   <link rel="stylesheet" href="article.css">
 </head>
 <body>
-  <!-- ===== VRT NWS-style top bar ===== -->
+  <!-- ===== VRT NWS top bar (logo only, left aligned) ===== -->
   <header class="site-header">
-    <div class="site-header__inner">
-      <a href="#" class="brand" aria-label="VRT NWS">
-        <span class="brand__vrt">VRT</span><span class="brand__nws">NWS</span>
-      </a>
-      <nav class="site-nav">
-        <a href="#">Binnenland</a>
-        <a href="#">Buitenland</a>
-        <a href="#">Politiek</a>
-        <a href="#">Economie</a>
-        <a href="#">Wetenschap</a>
-        <a href="#" class="is-active">Data</a>
-      </nav>
-    </div>
-    <div class="site-header__accent"></div>
+    <a href="https://vrtnws.be" class="brand" target="_blank" rel="noopener" aria-label="VRT NWS">
+      <img src="assets/vrtnws-logo.png" alt="VRT NWS">
+    </a>
   </header>
 
   <!-- ===== Article header ===== -->
   <article class="article">
     <header class="article-head">
-      <p class="kicker">Data &middot; Demografie</p>
       <h1 class="article-title">
         Hoe de Belgische steden ophielden met leeglopen — terwijl de rest
         van Europa nog steeds krimpt
@@ -50,7 +38,6 @@
         data-analyse op gemeenteniveau brengt de hele geschiedenis in beeld.
       </p>
       <div class="article-meta">
-        <span class="byline">Door <strong>Bram Vandendriessche</strong></span>
         <time datetime="2026-06-03">3 juni 2026</time>
       </div>
     </header>
@@ -350,12 +337,19 @@
     </footer>
   </article>
 
-  <!-- Site footer -->
-  <footer class="site-footer">
-    <div class="site-footer__inner">
-      <p>© 2026 — Demo-artikel. Niet officieel verbonden met VRT NWS.</p>
+  <!-- ===== VRT NWS credit footer ===== -->
+  <div id="creditcontainer">
+    <div id="creditcenter">
+      <a href="https://vrtnws.be" class="headerlogo footerlogo" target="_blank" rel="noopener">
+        <img src="assets/vrtnws-logo-white.png" alt="logo VRT NWS">
+      </a>
+      <p>
+        Redactie: Bram Vandendriessche, Daan Nicolay<br>
+        Eindredactie: Tim Pauwels<br>
+        Design &amp; development: Bram Vandendriessche
+      </p>
     </div>
-  </footer>
+  </div>
 
   <script src="article.js"></script>
 </body>

@@ -7,7 +7,7 @@
    ============================================================ */
 
 :root {
-  --vrt-red: #ED1C24;
+  --vrt-accent: #4d3bd8;            /* purple (matches VRT NWS "nws" badge) */
   --ink: #1a1a1a;
   --ink-soft: #5a5a5a;
   --rule: #e6e6e6;
@@ -35,11 +35,11 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--vrt-red); text-decoration: none; }
+a { color: var(--vrt-accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 /* ============================================================
-   TOP NAVIGATION (VRT NWS-style)
+   TOP HEADER — logo only, left aligned, white background
    ============================================================ */
 .site-header {
   background: var(--bg);
@@ -47,52 +47,16 @@ a:hover { text-decoration: underline; }
   position: sticky;
   top: 0;
   z-index: 100;
-}
-.site-header__inner {
-  max-width: var(--max-wide);
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  gap: 32px;
+  padding: 14px 24px;
 }
 .brand {
-  display: inline-flex;
-  align-items: stretch;
-  height: 28px;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 18px;
-  line-height: 28px;
-  letter-spacing: -0.02em;
+  display: inline-block;
   text-decoration: none;
 }
-.brand__vrt {
-  background: var(--vrt-red);
-  color: #fff;
-  padding: 0 6px;
-}
-.brand__nws {
-  background: var(--ink);
-  color: #fff;
-  padding: 0 6px;
-}
-.site-nav {
-  display: flex;
-  gap: 22px;
-  flex-wrap: wrap;
-}
-.site-nav a {
-  font-size: 14px;
-  color: var(--ink);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-.site-nav a.is-active { color: var(--vrt-red); }
-.site-nav a:hover { color: var(--vrt-red); text-decoration: none; }
-.site-header__accent {
-  height: 3px;
-  background: var(--vrt-red);
+.brand img {
+  display: block;
+  height: 32px;
+  width: auto;
 }
 
 /* ============================================================
@@ -113,7 +77,7 @@ a:hover { text-decoration: underline; }
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--vrt-red);
+  color: var(--vrt-accent);
 }
 .article-title {
   font-family: var(--font-display);
@@ -183,7 +147,7 @@ a:hover { text-decoration: underline; }
   line-height: 1.35;
   font-weight: 600;
   color: var(--ink);
-  border-left: 4px solid var(--vrt-red);
+  border-left: 4px solid var(--vrt-accent);
   padding: 6px 0 6px 22px;
   margin: 36px 0;
   letter-spacing: -0.015em;
@@ -238,7 +202,7 @@ a:hover { text-decoration: underline; }
   -webkit-backdrop-filter: blur(12px);
   border-radius: 4px;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
-  border-top: 3px solid var(--vrt-red);
+  border-top: 3px solid var(--vrt-accent);
 }
 .scrolly__card h2 {
   font-family: var(--font-display);
@@ -263,7 +227,7 @@ a:hover { text-decoration: underline; }
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--vrt-red);
+  color: var(--vrt-accent);
   margin: 0 0 8px 0;
 }
 
@@ -304,21 +268,36 @@ a:hover { text-decoration: underline; }
 }
 .article-foot p { margin: 0; line-height: 1.7; }
 .article-foot em { font-style: italic; color: var(--ink); font-weight: 500; }
-.article-foot a { color: var(--vrt-red); }
+.article-foot a { color: var(--vrt-accent); }
 
 /* ============================================================
-   SITE FOOTER
+   VRT NWS CREDIT FOOTER (purple background, white text)
    ============================================================ */
-.site-footer {
+#creditcontainer {
   margin-top: 72px;
-  background: var(--ink);
-  color: #aaa;
+  background: var(--vrt-accent);
+  color: #ffffff;
 }
-.site-footer__inner {
-  max-width: var(--max-wide);
+#creditcenter {
+  max-width: var(--max-prose);
   margin: 0 auto;
-  padding: 32px 24px;
-  font-size: 12px;
+  padding: 48px 24px 52px;
+  text-align: center;
+}
+#creditcenter .footerlogo {
+  display: inline-block;
+  margin: 0 0 22px 0;
+}
+#creditcenter .footerlogo img {
+  display: block;
+  height: 42px;
+  width: auto;
+}
+#creditcenter p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #ffffff;
 }
 
 /* ============================================================
@@ -329,9 +308,12 @@ a:hover { text-decoration: underline; }
   .article-lead { font-size: 17px; }
   .prose h2 { font-size: 22px; }
   .pull-quote { font-size: 20px; }
-  .site-nav { display: none; }       /* hide nav on small screens */
+  .site-header { padding: 10px 16px; }
+  .brand img { height: 26px; }
   .scrolly__card { max-width: 86vw; padding: 20px 22px; }
   .scrolly__card h2 { font-size: 19px; }
   .scrolly__box { padding: 0 4vw; justify-content: center; }
   .interactive iframe { height: 70vh; min-height: 480px; }
+  #creditcenter { padding: 36px 20px 40px; }
+  #creditcenter .footerlogo img { height: 34px; }
 }
