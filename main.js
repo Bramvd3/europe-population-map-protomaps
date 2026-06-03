@@ -284,26 +284,27 @@ async function init() {
       },
     }, beforeId);
 
-    refreshBins();
     attachInteractions();
 
-    // ---- TEMP DEBUG (Oostende discoloration bug) -------------------------
-    // After everything has settled, log: expected bin, stored feature-state,
-    // and any other features the source claims have gisco_id="BE_35013".
-    // Open DevTools → Console to read the report.
-    map.once("idle", () => {
-      const idx = dataByLocation.get("BE_35013");
-      const expected = binIndex(computeDelta(idx), mode === "pct" ? PCT_BINS : ABS_BINS);
-      const stored = map.getFeatureState({ source: "lau", sourceLayer: "lau", id: "BE_35013" });
-      let queriedCount = "n/a";
-      try {
-        queriedCount = map.querySourceFeatures("lau", {
-          sourceLayer: "lau",
-          filter: ["==", "gisco_id", "BE_35013"],
-        }).length;
-      } catch (_) {}
-      console.log("[OOSTENDE DEBUG]", { idx, expected_bin: expected, stored_state: stored, source_features_with_id: queriedCount });
-    });
+    // Defer the first refreshBins() until the LAU source has actually loaded
+    // at least one tile. Otherwise MapLibre's vector source + promoteId path
+    // has a race where the very first tile renders with a stale feature-state
+    // snapshot, which won't be corrected until the user hovers (which forces
+    // a re-render). After the initial fill, every later year-range/mode change
+    // calls refreshBins again synchronously — at that point the source is
+    // hot and setFeatureState propagates instantly.
+    function onceLauLoaded(e) {
+      if (e.sourceId !== "lau" || !map.isSourceLoaded("lau")) return;
+      map.off("sourcedata", onceLauLoaded);
+      refreshBins();
+      map.triggerRepaint();
+    }
+    if (map.isSourceLoaded("lau")) {
+      refreshBins();
+      map.triggerRepaint();
+    } else {
+      map.on("sourcedata", onceLauLoaded);
+    }
   });
 }
 
