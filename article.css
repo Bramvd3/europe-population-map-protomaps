@@ -86,7 +86,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 14px 24px;
+  padding: 10px 24px;
 }
 .brand {
   display: inline-block;
@@ -94,7 +94,7 @@ a:hover {
 }
 .brand img {
   display: block;
-  height: 32px;
+  height: 22px;
   width: auto;
 }
 
@@ -312,7 +312,7 @@ a:hover {
 #creditcenter {
   max-width: 1040px;
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
 }
 #creditcenter .footerlogo {
   display: inline-block;
@@ -320,7 +320,7 @@ a:hover {
 }
 #creditcenter .footerlogo img {
   display: block;
-  height: 42px;
+  height: 30px;
   width: auto;
 }
 #creditcenter p {
@@ -339,12 +339,12 @@ a:hover {
   .article-lead { font-size: 17px; }
   .prose h2 { font-size: 22px; }
   .pull-quote { font-size: 20px; }
-  .site-header { padding: 10px 16px; }
-  .brand img { height: 26px; }
+  .site-header { padding: 8px 16px; }
+  .brand img { height: 18px; }
   .scrolly__card { max-width: 86vw; padding: 20px 22px; }
   .scrolly__card h2 { font-size: 19px; }
   .scrolly__box { padding: 0 4vw; justify-content: center; }
   .interactive iframe { height: 70vh; min-height: 480px; }
   #creditcenter { padding: 36px 20px 40px; }
-  #creditcenter .footerlogo img { height: 34px; }
+  #creditcenter .footerlogo img { height: 24px; }
 }
