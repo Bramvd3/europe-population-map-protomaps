@@ -1,24 +1,48 @@
 /* ============================================================
-   VRT NWS-inspired article styling.
-
-   Palette: pure white background, near-black text (#1a1a1a),
-   VRT-red accent (#ED1C24). Font: Inter (free, close in spirit to
-   the proprietary VRT NWS Sans).
+   VRT NWS article styling. Tokens reverse-engineered from
+   interactief.vrtnws.be's published CSS:
+     --basevio  #5541F0  — primary purple
+     --darkvio  #031037  — body text + headings (near-black, blue-tinted)
+     --coltyp3  #4031AE  — darker purple for the footer gradient
+   Font is Roobert (Roobert-Regular / -Medium / -SemiBold), served
+   from VRT's CDN. Free fallback chain to Helvetica/Arial.
    ============================================================ */
 
+@font-face {
+  font-family: "Roobert";
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://interactief.vrtnws.be/webfont/Roobert-Regular.woff2") format("woff2"),
+       url("https://interactief.vrtnws.be/webfont/Roobert-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "Roobert";
+  font-weight: 500;
+  font-display: swap;
+  src: url("https://interactief.vrtnws.be/webfont/Roobert-Medium.woff2") format("woff2"),
+       url("https://interactief.vrtnws.be/webfont/Roobert-Medium.woff") format("woff");
+}
+@font-face {
+  font-family: "Roobert";
+  font-weight: 600;
+  font-display: swap;
+  src: url("https://interactief.vrtnws.be/webfont/Roobert-SemiBold.woff2") format("woff2"),
+       url("https://interactief.vrtnws.be/webfont/Roobert-SemiBold.woff") format("woff");
+}
+
 :root {
-  --vrt-accent: #4d3bd8;            /* purple (matches VRT NWS "nws" badge) */
-  --ink: #1a1a1a;
-  --ink-soft: #5a5a5a;
-  --rule: #e6e6e6;
+  --vrt-accent: #5541F0;             /* --basevio */
+  --vrt-accent-dark: #4031AE;        /* --coltyp3 — gradient anchor */
+  --ink: #031037;                    /* --darkvio */
+  --ink-soft: #5a5a6f;
+  --rule: #e6e6ec;
   --bg: #ffffff;
-  --bg-soft: #f5f5f5;
+  --bg-soft: #f5f5f8;
   --max-prose: 720px;
   --max-wide: 1100px;
 
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Inter", -apple-system, sans-serif;
+  --font-body: "Roobert", Helvetica, Arial, sans-serif;
+  --font-display: "Roobert", Helvetica, Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -35,8 +59,23 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--vrt-accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a {
+  color: var(--ink);
+  text-decoration: underline solid var(--vrt-accent) 2px;
+  text-underline-offset: 3px;
+}
+a:hover {
+  color: var(--vrt-accent);
+  text-decoration: underline solid var(--vrt-accent) 2px;
+}
+.brand,
+.brand:hover,
+.scrolly__card a,
+#creditcontainer a,
+#creditcontainer a:hover {
+  /* logos + a few special links should not show the underline */
+  text-decoration: none;
+}
 
 /* ============================================================
    TOP HEADER — logo only, left aligned, white background
@@ -271,22 +310,28 @@ a:hover { text-decoration: underline; }
 .article-foot a { color: var(--vrt-accent); }
 
 /* ============================================================
-   VRT NWS CREDIT FOOTER (purple background, white text)
+   VRT NWS CREDIT FOOTER (45° purple gradient, white text)
+   Matches their #creditcontainer styling: padding 8rem 2rem, max-width
+   1040px, gradient from #4031AE → #5541F0.
    ============================================================ */
 #creditcontainer {
-  margin-top: 72px;
-  background: var(--vrt-accent);
+  margin-top: 10rem;
   color: #ffffff;
+  background: linear-gradient(
+    45deg,
+    var(--vrt-accent-dark) 0%,
+    var(--vrt-accent) 100%
+  );
+  padding: 8rem 2rem;
 }
 #creditcenter {
-  max-width: var(--max-prose);
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 48px 24px 52px;
   text-align: center;
 }
 #creditcenter .footerlogo {
   display: inline-block;
-  margin: 0 0 22px 0;
+  margin: 0 0 1.5rem 0;
 }
 #creditcenter .footerlogo img {
   display: block;
@@ -295,9 +340,10 @@ a:hover { text-decoration: underline; }
 }
 #creditcenter p {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: 1.05rem;
+  line-height: 1.55;
   color: #ffffff;
+  font-weight: 400;
 }
 
 /* ============================================================
