@@ -27,11 +27,23 @@ html, body {
   position: fixed;
   inset: 0;                       /* top:0 right:0 bottom:0 left:0 */
   z-index: 0;
+  /* Critical: wheel/touch events on the map must propagate to the body so
+     the page can scroll. Children that NEED clicks (period pill, chart
+     panel, legend) re-enable pointer-events themselves below. */
+  pointer-events: none;
 }
 
 #map {
   position: absolute;
   inset: 0;
+}
+
+/* Re-enable pointer events for the interactive overlay panels. The map
+   itself stays click-through so wheel/touch over empty map area scrolls. */
+#period-pill,
+#chart-panel,
+#map-legend-wrapper .map-overlay-element {
+  pointer-events: auto;
 }
 
 /* ---- Period pill (top-center, updated by JS) -------------------------- */
