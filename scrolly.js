@@ -55,8 +55,8 @@ const THREE_BIG = ["BE_11002", "BE_44021", "BE_21004"];
 // multiPopup: array of gisco_ids → draws a row of mini line charts (one per
 //   id) in the chart panel, with a vertical marker at year 2001 (the "knik").
 const STEPS = [
-  // 0 — Intro, Ireland barely on the left, Poland barely on the right
-  { yearA: 1961, yearB: 2024, center: [6, 51],     zoom: 4.8, highlight: [],            popup: null, dim: "off",         countryHighlight: null },
+  // 0 — Intro, tight West-European frame (NL/BE/FR/UK + western DE)
+  { yearA: 1961, yearB: 2024, center: [5, 51],     zoom: 5.5, highlight: [],            popup: null, dim: "off",         countryHighlight: null },
   // 1 — BE cities decline
   { yearA: 1961, yearB: 2001, center: [4.6, 50.7],  zoom: 7.2, highlight: BIG_CITIES,    popup: null, dim: "belgium",     countryHighlight: null },
   // 2 — Brussels-centred banlieue
