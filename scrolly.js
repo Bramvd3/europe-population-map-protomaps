@@ -550,12 +550,19 @@ function applyStep(step) {
     updatePeriodPill();
   }
 
+  // On mobile, zoom out a notch so the same geographical area still fits
+  // comfortably in the narrower viewport. Without this, a step tuned for
+  // a 1280px desktop renders as "way too zoomed in" on a 375px phone.
+  // The breakpoint matches article.css's @media (max-width: 720px) rule.
+  const isMobile = window.innerWidth <= 720;
+  const zoom = isMobile ? Math.max(3.8, step.zoom - 1.3) : step.zoom;
+
   if (step.transition === "jump") {
-    map.jumpTo({ center: step.center, zoom: step.zoom });
+    map.jumpTo({ center: step.center, zoom });
   } else {
     map.flyTo({
       center: step.center,
-      zoom: step.zoom,
+      zoom,
       essential: true,
       speed: 0.5,
       curve: 1.42,
