@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--
+  Scrollytelling companion to the Protomaps embed.
+
+  Layout B: full-bleed sticky map at z=0. Floating text cards on top
+  (z=1). Scrollama detects which card is in view and the JS replays the
+  story: fly the map, swap the period, highlight a focus region, optionally
+  open the D3 popup for a single LAU.
+
+  Reuses the same lau.pmtiles + data.json as the main embed — keeps the
+  Protomaps basemap, the same colour palette, and the same chart code.
+-->
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hoe Europa kromp én groeide — een gemeentelijke geschiedenis</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="scrolly.css">
+</head>
+<body>
+  <!-- Full-bleed sticky map -->
+  <div id="map-container">
+    <div id="map"></div>
+
+    <!-- Year-period display, top-center. Pure CSS, updated by JS. -->
+    <div id="period-pill">
+      <span class="year-a">1961</span>
+      <div class="period-track">
+        <!-- Fill spans from year-A position to year-B position -->
+        <div class="period-fill" id="period-fill"></div>
+        <!-- Tick marks for the 8 census years -->
+        <div class="period-ticks" id="period-ticks"></div>
+      </div>
+      <span class="year-b">2024</span>
+    </div>
+
+    <!-- Popup with D3 line chart — opens automatically at specific steps -->
+    <div id="chart-panel-wrapper">
+      <div id="chart-panel" class="map-overlay-element" style="display: none;">
+        <div id="data-popup">
+          <p class="info-sentence" id="info-sentence"></p>
+          <div id="popup_chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend, bottom-right -->
+    <div id="map-legend-wrapper">
+      <div class="map-overlay-element">
+        <div id="map_legend"></div>
+        <div id="map-footer">
+          Data:
+          <a href="https://data.jrc.ec.europa.eu/dataset/37fcacbf-12e2-4b31-b1af-83117a74b2c7"
+             target="_blank" rel="noopener">JRC</a>.
+          Kaart:
+          <a href="https://protomaps.com" target="_blank" rel="noopener">Protomaps</a>
+          /
+          <a href="https://openstreetmap.org" target="_blank" rel="noopener">OSM</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- The scrollable story — each .step is one viewport-tall section -->
+  <article id="story">
+    <!-- Cards are positioned with CSS so they appear bottom-left on desktop,
+         bottom on mobile. Each card triggers one map state via Scrollama. -->
+    <section class="step intro" data-step="0">
+      <div class="card">
+        <p class="kicker">Scroll om het verhaal te volgen</p>
+        <h1>Hoe Europa kromp én groeide</h1>
+        <p>Een halve eeuw bevolkingsverandering, gemeente per gemeente —
+           van 1961 tot 2024.</p>
+        <p class="hint">↓</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="1">
+      <div class="card">
+        <p class="period-label">1961 → 2001</p>
+        <h2>Krimp in de Belgische steden</h2>
+        <p>In elke grote Belgische stad verloor het centrum bewoners.
+           Brussel <strong>−22%</strong>, Liège <strong>−26%</strong>,
+           Antwerpen <strong>−18%</strong>, Gent <strong>−13%</strong>,
+           Charleroi <strong>−17%</strong>. De stadsvlucht naar de rand
+           was decennialang dé Belgische bevolkingstrend.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="2">
+      <div class="card">
+        <p class="period-label">1961 → 2001</p>
+        <h2>De banlieue zuid van Brussel</h2>
+        <p>Ottignies-Louvain-la-Neuve groeide met <strong>+209%</strong>
+           nadat de universiteit er in 1968 naartoe verhuisde. Buurgemeenten
+           als Chaumont-Gistoux (+174%), Lasne (+127%) en Wavre (+105%)
+           volgden — pendelaars die naar Brussel reden vanuit
+           nieuwbouwwijken.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="3">
+      <div class="card">
+        <p class="period-label">1961 → 2001</p>
+        <h2>De Kempen en Limburg</h2>
+        <p>In de Antwerpse Kempen en in Limburg liep de groei eveneens op.
+           De aanleg van de E313 en E314 maakte pendelen vanuit Turnhout
+           en Hasselt richting Antwerpen of Leuven praktisch. Daarbovenop
+           zorgden gastarbeiders in de mijnen voor een tweede groeigolf.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="4">
+      <div class="card">
+        <p class="period-label">1961 → 2001</p>
+        <h2>De Westhoek krimpt</h2>
+        <p>Aan de andere kant van het land: Lo-Reninge <strong>−19%</strong>,
+           Vleteren −17%, Mesen −14%, Heuvelland −11%. De landelijke dorpen
+           in de Vlaamse Westhoek verloren jongeren aan de steden zonder
+           dat er nieuwe bewoners voor in de plaats kwamen.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="5">
+      <div class="card">
+        <p class="period-label">2001 → 2024</p>
+        <h2>De steden keren terug</h2>
+        <p>Vanaf het jaar 2000 draait het patroon. Antwerpen
+           <strong>+22%</strong>, Brussel <strong>+49%</strong>,
+           Gent <strong>+20%</strong>, Charleroi <strong>+2%</strong> —
+           de centra groeien weer. Immigratie en herwaardering van
+           stedelijk wonen drijven het verhaal.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="6">
+      <div class="card">
+        <p class="period-label">2001 → 2024</p>
+        <h2>De knik in elke grafiek</h2>
+        <p>Zoom in op één voorbeeld — Antwerpen. De bevolkingscurve daalt
+           van 1961 tot rond 2000, dan een <em>duidelijke knik omhoog</em>.
+           Hetzelfde patroon zie je bij Brussel, Gent, Luik en Charleroi.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="7">
+      <div class="card">
+        <p class="period-label">2001 → 2024</p>
+        <h2>Het Luxemburgse grens-effect</h2>
+        <p>De Belgische provincie Luxemburg is de stille winnaar van de
+           21e eeuw. Léglise <strong>+58%</strong>, Vaux-sur-Sûre +51%,
+           Martelange +43% — Belgen die wonen in eigen land en pendelen
+           naar het Groothertogdom voor de hogere lonen.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="8">
+      <div class="card">
+        <p class="period-label">2001 → 2024</p>
+        <h2>Heel België: bijna lichtgroen</h2>
+        <p>Bekeken over heel België is er sinds 2001 amper nog krimp.
+           De rode plekken zijn beperkt; de meeste gemeenten groeien licht.
+           Een rustigere, gestabiliseerde fase.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="9">
+      <div class="card">
+        <p class="period-label">2001 → 2024</p>
+        <h2>Maar de buren krimpen wél</h2>
+        <p>Zoom uit en het beeld verandert. Het Franse en Duitse platteland
+           blijft sterk dalen. De diepe rurale demografische erosie van
+           Europa is niet weggebleven — alleen niet bij ons.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="10">
+      <div class="card">
+        <p class="period-label">2001 → 2024</p>
+        <h2>De España vaciada</h2>
+        <p>Het binnenland van Spanje en Portugal — de zogenaamde "leeggelopen
+           Spanje". Dorpen die in twee decennia een vijfde of meer van hun
+           inwoners verloren. Vooral het hoogland tussen Madrid en Salamanca
+           toont een opvallend rood patroon.</p>
+      </div>
+    </section>
+
+    <section class="step" data-step="11">
+      <div class="card">
+        <p class="period-label">2001 → 2024</p>
+        <h2>De Baltische emigratie</h2>
+        <p>Litouwen, Letland en Estland zijn nagenoeg volledig rood — vanaf
+           de EU-toetreding in 2004 vertrok ruwweg een vijfde van de
+           bevolking naar West-Europa. De dorpsleegloop versnelt door
+           dalende geboortes.</p>
+      </div>
+    </section>
+
+    <!-- Trailing buffer so the last step can be fully read before the
+         page bottom. -->
+    <section class="step end">
+      <div class="card minimal">
+        <p>Einde.</p>
+        <p class="hint"><a href="./">Terug naar de interactieve kaart</a></p>
+      </div>
+    </section>
+  </article>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+  <script src="https://unpkg.com/protomaps-themes-base@4.5.0/dist/protomaps-themes-base.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/scrollama@3.2.0/build/scrollama.min.js"></script>
+  <script type="module" src="scrolly.js"></script>
+</body>
+</html>

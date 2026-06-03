@@ -1,0 +1,267 @@
+/* ============================================================
+   Scrollytelling: full-bleed sticky map + floating text cards.
+
+   Layout: map fills the viewport at z=0 (position: fixed). The story
+   sits above it (z=1) and scrolls. Cards have pointer-events: auto so
+   you can click links inside them, while the surrounding space passes
+   through to the map.
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1c1c1c;
+  background: #f5f5f5;
+}
+
+/* ---- Sticky map container --------------------------------------------- */
+#map-container {
+  position: fixed;
+  inset: 0;                       /* top:0 right:0 bottom:0 left:0 */
+  z-index: 0;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- Period pill (top-center, updated by JS) -------------------------- */
+#period-pill {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+}
+
+#period-pill .year-a,
+#period-pill .year-b {
+  font-weight: 600;
+  color: #444;
+  min-width: 36px;
+  text-align: center;
+}
+
+#period-pill .year-a.active,
+#period-pill .year-b.active {
+  color: #1c1c1c;
+}
+
+.period-track {
+  position: relative;
+  width: 220px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+  overflow: visible;
+}
+
+.period-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: #1c1c1c;
+  border-radius: 3px;
+  transition: left 0.6s ease, right 0.6s ease;
+}
+
+.period-ticks {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+.period-ticks .tick {
+  position: absolute;
+  width: 2px;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 1px;
+  transform: translateX(-50%);
+}
+
+/* ---- Popup with D3 chart (same styling as the main embed) ------------- */
+#chart-panel-wrapper {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  z-index: 6;
+  pointer-events: none;
+}
+#chart-panel {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 16px 18px;
+  width: 320px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  font-size: 13px;
+  line-height: 1.5;
+}
+#chart-panel .info-sentence {
+  margin: 0 0 8px 0;
+}
+
+/* ---- Legend (bottom-right) -------------------------------------------- */
+#map-legend-wrapper {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 6;
+  pointer-events: none;
+}
+#map-legend-wrapper .map-overlay-element {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  font-size: 11px;
+  color: #555;
+}
+#map-footer {
+  margin-top: 6px;
+  font-size: 10px;
+  color: #888;
+}
+#map-footer a { color: #555; }
+
+/* ---- The story (scrollable text on top of map) ------------------------ */
+#story {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;          /* let pointer pass through to map */
+  padding: 0;
+}
+
+.step {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 5vw;
+}
+
+.step.intro {
+  align-items: center;
+  justify-content: center;
+}
+
+.step .card {
+  pointer-events: auto;
+  max-width: 420px;
+  padding: 24px 28px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+.step .card.minimal {
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.10);
+  padding: 16px 20px;
+}
+
+.step h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+.step h2 {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+.step p {
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0 0 10px 0;
+  color: #2a2a2a;
+}
+.step p strong { font-weight: 700; }
+.step p:last-child { margin-bottom: 0; }
+
+.step .kicker {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin: 0 0 14px 0;
+}
+.step .period-label {
+  display: inline-block;
+  padding: 3px 9px;
+  background: #1c1c1c;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin: 0 0 10px 0;
+}
+.step .hint {
+  font-size: 12px;
+  color: #888;
+  margin-top: 16px;
+}
+
+/* ---- Mobile: cards take the bottom, smaller --------------------------- */
+@media (max-width: 640px) {
+  .step {
+    align-items: flex-end;
+    padding: 0 4vw 4vw 4vw;
+  }
+  .step.intro {
+    align-items: center;
+  }
+  .step .card {
+    max-width: 100%;
+    padding: 18px 20px;
+  }
+  .step h1 { font-size: 26px; }
+  .step h2 { font-size: 19px; }
+  .step p { font-size: 14px; }
+
+  #period-pill {
+    top: 12px;
+    font-size: 12px;
+    padding: 7px 12px;
+    gap: 8px;
+  }
+  .period-track { width: 140px; }
+
+  #chart-panel-wrapper {
+    bottom: 92px;     /* clear of the card */
+    left: 12px;
+    right: 12px;
+  }
+  #chart-panel { width: auto; }
+}
