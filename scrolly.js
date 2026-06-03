@@ -550,8 +550,9 @@ function showMultiPopup(giscoIds) {
       .style("margin-bottom", "2px")
       .text(name);
 
-    const W = 150, H = 86;
-    const m = { top: 4, right: 6, bottom: 14, left: 6 };
+    // Reserve enough height for the labels above + below the curve
+    const W = 160, H = 110;
+    const m = { top: 16, right: 8, bottom: 18, left: 8 };
     const iw = W - m.left - m.right;
     const ih = H - m.top - m.bottom;
 
@@ -561,8 +562,20 @@ function showMultiPopup(giscoIds) {
       .style("display", "block");
     const g = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
 
-    const x = d3.scaleLinear().domain(d3.extent(series, d => d.year)).range([0, iw]);
-    const y = d3.scaleLinear().domain(d3.extent(series, d => d.pop)).nice().range([ih, 0]);
+    const x = d3.scaleLinear()
+      .domain(d3.extent(series, d => d.year))
+      .range([0, iw]);
+
+    // Padded y-domain so the dip doesn't visually hit the bottom of the
+    // chart (otherwise it reads as "population went to zero"). 40% headroom
+    // below the minimum + 15% above the maximum keeps the curve visibly
+    // dynamic without misleading the eye.
+    const minPop = d3.min(series, d => d.pop);
+    const maxPop = d3.max(series, d => d.pop);
+    const span = Math.max(maxPop - minPop, 1);
+    const y = d3.scaleLinear()
+      .domain([minPop - span * 0.4, maxPop + span * 0.15])
+      .range([ih, 0]);
 
     // Dashed marker at 2001 — the year where the trend bends
     g.append("line")
@@ -592,8 +605,26 @@ function showMultiPopup(giscoIds) {
       .attr("r", 1.6)
       .attr("fill", "#222");
 
-    // Red dot on the 2001 datapoint — the inflection
+    // Value labels at 1961, 2001 (the dip), 2024
+    const p1961 = series.find(s => s.year === 1961);
     const p2001 = series.find(s => s.year === 2001);
+    const p2024 = series.find(s => s.year === 2024);
+    const fmt = v => v >= 100000 ? Math.round(v / 1000) + "k" : v.toLocaleString();
+
+    if (p1961) {
+      g.append("text")
+        .attr("x", x(1961)).attr("y", y(p1961.pop) - 6)
+        .attr("font-size", 9).attr("fill", "#555")
+        .text(fmt(p1961.pop));
+    }
+    if (p2024) {
+      g.append("text")
+        .attr("x", x(2024)).attr("y", y(p2024.pop) - 6)
+        .attr("text-anchor", "end")
+        .attr("font-size", 9).attr("fill", "#555")
+        .text(fmt(p2024.pop));
+    }
+    // The inflection point — red dot + value label in red, anchored below.
     if (p2001) {
       g.append("circle")
         .attr("cx", x(2001))
@@ -602,14 +633,19 @@ function showMultiPopup(giscoIds) {
         .attr("fill", "#d46780")
         .attr("stroke", "#fff")
         .attr("stroke-width", 1);
+      g.append("text")
+        .attr("x", x(2001)).attr("y", y(p2001.pop) + 12)
+        .attr("text-anchor", "middle")
+        .attr("font-size", 9).attr("font-weight", "600").attr("fill", "#a83a55")
+        .text(fmt(p2001.pop));
     }
 
     g.append("text")
-      .attr("x", 0).attr("y", ih + 10)
+      .attr("x", 0).attr("y", ih + 12)
       .attr("font-size", 9).attr("fill", "#666")
       .text("1961");
     g.append("text")
-      .attr("x", iw).attr("y", ih + 10)
+      .attr("x", iw).attr("y", ih + 12)
       .attr("text-anchor", "end")
       .attr("font-size", 9).attr("fill", "#666")
       .text("2024");
