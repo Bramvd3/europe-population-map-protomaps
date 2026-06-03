@@ -1,0 +1,337 @@
+/* ============================================================
+   VRT NWS-inspired article styling.
+
+   Palette: pure white background, near-black text (#1a1a1a),
+   VRT-red accent (#ED1C24). Font: Inter (free, close in spirit to
+   the proprietary VRT NWS Sans).
+   ============================================================ */
+
+:root {
+  --vrt-red: #ED1C24;
+  --ink: #1a1a1a;
+  --ink-soft: #5a5a5a;
+  --rule: #e6e6e6;
+  --bg: #ffffff;
+  --bg-soft: #f5f5f5;
+  --max-prose: 720px;
+  --max-wide: 1100px;
+
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Inter", -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  font-feature-settings: "cv11", "ss01";   /* Inter stylistic tweaks */
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--vrt-red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============================================================
+   TOP NAVIGATION (VRT NWS-style)
+   ============================================================ */
+.site-header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.site-header__inner {
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.brand {
+  display: inline-flex;
+  align-items: stretch;
+  height: 28px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.brand__vrt {
+  background: var(--vrt-red);
+  color: #fff;
+  padding: 0 6px;
+}
+.brand__nws {
+  background: var(--ink);
+  color: #fff;
+  padding: 0 6px;
+}
+.site-nav {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.site-nav a {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.site-nav a.is-active { color: var(--vrt-red); }
+.site-nav a:hover { color: var(--vrt-red); text-decoration: none; }
+.site-header__accent {
+  height: 3px;
+  background: var(--vrt-red);
+}
+
+/* ============================================================
+   ARTICLE HEADER
+   ============================================================ */
+.article { margin: 0 auto; }
+
+.article-head {
+  max-width: var(--max-prose);
+  margin: 56px auto 32px;
+  padding: 0 24px;
+}
+.kicker {
+  display: inline-block;
+  margin: 0 0 14px 0;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vrt-red);
+}
+.article-title {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  margin: 0 0 22px 0;
+  color: var(--ink);
+}
+.article-lead {
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0 0 28px 0;
+  font-weight: 400;
+}
+.article-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.byline strong { color: var(--ink); }
+
+/* ============================================================
+   BODY TEXT (prose)
+   ============================================================ */
+.prose {
+  max-width: var(--max-prose);
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+.prose p {
+  margin: 0 0 18px 0;
+  font-size: 17px;
+  line-height: 1.7;
+}
+.prose p:last-child { margin-bottom: 0; }
+.prose h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 48px 0 18px 0;
+  color: var(--ink);
+}
+.prose h2:first-child { margin-top: 0; }
+.prose strong { color: var(--ink); font-weight: 700; }
+.prose em { font-style: italic; }
+.prose__hint {
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-align: center;
+  margin: 22px 0 0 0 !important;
+}
+
+/* Pull-quote */
+.pull-quote {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--ink);
+  border-left: 4px solid var(--vrt-red);
+  padding: 6px 0 6px 22px;
+  margin: 36px 0;
+  letter-spacing: -0.015em;
+}
+
+/* ============================================================
+   SCROLLY SECTION (sticky iframe + floating text cards)
+   ============================================================ */
+.scrolly {
+  position: relative;
+  margin: 64px 0 32px;
+  background: var(--bg-soft);
+}
+
+.scrolly__map {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100vh;
+  width: 100%;
+}
+.scrolly__map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.scrolly__boxes {
+  position: relative;
+  z-index: 1;
+  /* Pull the boxes up so they overlay the sticky iframe */
+  margin-top: -100vh;
+  pointer-events: none;
+}
+
+.scrolly__box {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 5vw;
+  pointer-events: none;
+}
+
+.scrolly__card {
+  pointer-events: auto;
+  max-width: 440px;
+  padding: 28px 32px 30px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 4px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  border-top: 3px solid var(--vrt-red);
+}
+.scrolly__card h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0 0 12px 0;
+  color: var(--ink);
+}
+.scrolly__card p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.scrolly__card p strong { color: var(--ink); font-weight: 700; }
+
+.card-kicker {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vrt-red);
+  margin: 0 0 8px 0;
+}
+
+/* ============================================================
+   INTERACTIVE EMBED SECTION
+   ============================================================ */
+.interactive {
+  max-width: var(--max-wide);
+  margin: 56px auto 28px;
+  padding: 0 24px;
+}
+.interactive iframe {
+  width: 100%;
+  height: 80vh;
+  min-height: 560px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  display: block;
+}
+.interactive__caption {
+  margin: 12px 4px 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.interactive__caption strong { color: var(--ink); }
+
+/* ============================================================
+   ARTICLE FOOTER
+   ============================================================ */
+.article-foot {
+  max-width: var(--max-prose);
+  margin: 56px auto 0;
+  padding: 24px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.article-foot p { margin: 0; line-height: 1.7; }
+.article-foot em { font-style: italic; color: var(--ink); font-weight: 500; }
+.article-foot a { color: var(--vrt-red); }
+
+/* ============================================================
+   SITE FOOTER
+   ============================================================ */
+.site-footer {
+  margin-top: 72px;
+  background: var(--ink);
+  color: #aaa;
+}
+.site-footer__inner {
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  padding: 32px 24px;
+  font-size: 12px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 720px) {
+  .article-title { font-size: 30px; }
+  .article-lead { font-size: 17px; }
+  .prose h2 { font-size: 22px; }
+  .pull-quote { font-size: 20px; }
+  .site-nav { display: none; }       /* hide nav on small screens */
+  .scrolly__card { max-width: 86vw; padding: 20px 22px; }
+  .scrolly__card h2 { font-size: 19px; }
+  .scrolly__box { padding: 0 4vw; justify-content: center; }
+  .interactive iframe { height: 70vh; min-height: 480px; }
+}

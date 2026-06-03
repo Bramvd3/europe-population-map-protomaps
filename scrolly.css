@@ -22,6 +22,11 @@ html, body {
   overflow: visible;
 }
 
+/* When loaded inside an article iframe (scrolly.html?embed=1) the cards
+   live in the parent article — hide them inside the iframe. Period pill,
+   legend, and chart panel stay visible (those are map-overlay UI). */
+body.embedded #story { display: none; }
+
 /* ---- Sticky map container --------------------------------------------- */
 #map-container {
   position: fixed;

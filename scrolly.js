@@ -72,6 +72,10 @@ const STEPS = [
 let currentYearA = STEPS[0].yearA;
 let currentYearB = STEPS[0].yearB;
 let map;
+// Embedded mode (when scrolly.html is loaded inside an article iframe with
+// ?embed=1). In that mode we hide the internal text cards and the period
+// pill, and let the parent article drive applyStep() via postMessage.
+const IS_EMBEDDED = new URLSearchParams(location.search).get("embed") === "1";
 
 // ---- Map style (copied from main.js) -----------------------------------
 const PROTOMAPS_KEY = "d3b78e1318dd7bcb";
@@ -271,7 +275,20 @@ async function init() {
     // steps stream in as the user scrolls. The slow flyTo speed (0.5) gives
     // MapLibre time to keep up.
     applyStep(STEPS[0]);
-    setupScrollama();
+
+    if (IS_EMBEDDED) {
+      // Embedded mode: hide internal cards + period pill, listen for the
+      // parent article's step events via postMessage.
+      document.body.classList.add("embedded");
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "step" && typeof event.data.index === "number") {
+          const step = STEPS[event.data.index];
+          if (step) applyStep(step);
+        }
+      });
+    } else {
+      setupScrollama();
+    }
   });
 }
 
