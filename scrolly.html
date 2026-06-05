@@ -18,6 +18,14 @@
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="scrolly.css">
+  <!-- Tag <html class="embedded"> before the body parses so the intro card
+       (and any other story content) is hidden by CSS immediately, instead
+       of flashing for the moment between HTML render and map-load. -->
+  <script>
+    if (new URLSearchParams(location.search).get("embed") === "1") {
+      document.documentElement.classList.add("embedded");
+    }
+  </script>
 </head>
 <body>
   <!-- Full-bleed sticky map -->

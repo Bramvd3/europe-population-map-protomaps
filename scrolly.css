@@ -24,8 +24,10 @@ html, body {
 
 /* When loaded inside an article iframe (scrolly.html?embed=1) the cards
    live in the parent article — hide them inside the iframe. Period pill,
-   legend, and chart panel stay visible (those are map-overlay UI). */
-body.embedded #story { display: none; }
+   legend, and chart panel stay visible (those are map-overlay UI).
+   Class is set both on <html> (inline script in <head>, before render)
+   and later on <body> (after map load) — so this selector hits early. */
+.embedded #story { display: none; }
 
 /* ---- Sticky map container --------------------------------------------- */
 #map-container {
