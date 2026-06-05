@@ -554,31 +554,35 @@ function showMultiPopup(giscoIds) {
 }
 
 // ---- Legend (D3) -------------------------------------------------------
+// Thin horizontal strip: a 6-px band of colour bands plus boundary
+// labels underneath. Matches the interactive embed (main.js) and the
+// mockup, and takes a lot less vertical space than the old 30-px swatches.
 function drawLegend() {
   const el = d3.select("#map_legend");
   el.selectAll("*").remove();
-  const W = 280, H = 30;
-  const swatchW = W / COLORS.length;
+  const W = 300, H = 24;
+  const bandW = W / COLORS.length;
   const svg = el.append("svg")
-    .attr("viewBox", `0 0 ${W} ${H + 14}`)
-    .attr("width", "100%");
-  svg.selectAll("rect")
-    .data(COLORS)
-    .join("rect")
-    .attr("x", (_, i) => i * swatchW)
-    .attr("y", 0)
-    .attr("width", swatchW)
-    .attr("height", H)
-    .attr("fill", d => d);
-  svg.selectAll("text")
-    .data(PCT_BINS)
-    .join("text")
-    .attr("x", (_, i) => (i + 1) * swatchW)
-    .attr("y", H + 12)
-    .attr("text-anchor", "middle")
-    .attr("font-size", 9)
-    .attr("fill", "#555")
-    .text(d => (d >= 0 ? "+" : "") + d + "%");
+    .attr("viewBox", `0 0 ${W} ${H}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("display", "block");
+  COLORS.forEach((c, i) => {
+    svg.append("rect")
+      .attr("x", i * bandW)
+      .attr("y", 0)
+      .attr("width", bandW)
+      .attr("height", 6)
+      .attr("fill", c);
+  });
+  for (let i = 0; i < PCT_BINS.length; i++) {
+    const v = PCT_BINS[i];
+    svg.append("text")
+      .attr("class", "legend-number")
+      .attr("text-anchor", "middle")
+      .attr("x", (i + 1) * bandW)
+      .attr("y", 17)
+      .text((v > 0 ? "+" : "") + v + "%");
+  }
 }
 
 // ---- Apply a single story step ----------------------------------------

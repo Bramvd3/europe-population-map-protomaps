@@ -13,7 +13,11 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- viewport-fit=cover lets env(safe-area-inset-*) evaluate to the
+       actual device safe-area on iOS Safari (notch / dynamic island /
+       Android status bar). Used by scrolly.css to push the period pill
+       below the status bar when the iframe sticks to the device top. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Hoe Europa kromp én groeide — een gemeentelijke geschiedenis</title>
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="style.css">
