@@ -48,5 +48,24 @@
   // trigger zone).
   iframe.addEventListener("load", () => {
     setTimeout(() => sendStep(0), 200);
+    sendSafeArea();
   });
+
+  // env(safe-area-inset-top) returns 0 inside cross-document iframes
+  // on all browsers, so the scrolly's period pill can't compute its
+  // own offset. Read the value on this (parent) side and forward it.
+  function sendSafeArea() {
+    if (!iframe.contentWindow) return;
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--device-safe-top")
+      .trim();
+    const top = parseInt(raw, 10) || 0;
+    iframe.contentWindow.postMessage({ type: "safeArea", top }, "*");
+  }
+
+  // Safe-area can change at runtime when the address bar / URL bar
+  // collapses on mobile scroll, so re-send on resize and orientation
+  // changes. Cheap — single integer postMessage.
+  window.addEventListener("resize", sendSafeArea);
+  window.addEventListener("orientationchange", sendSafeArea);
 })();

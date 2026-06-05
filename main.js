@@ -200,7 +200,10 @@ async function init() {
     zoom: 3.4,
     minZoom: 2,
     maxZoom: 12,
-    attributionControl: { compact: true },
+    // No built-in attribution control — we render 'Data: JRC. Kaart:
+    // Protomaps / OSM.' ourselves in the legend footer, so the MapLibre
+    // 'i' button would be a redundant duplicate.
+    attributionControl: false,
   });
 
   map.on("load", () => {

@@ -52,12 +52,16 @@ html, body {
 }
 
 /* ---- Period pill (top-center, updated by JS) --------------------------
-   On mobile, env(safe-area-inset-top) gives the height of the status
-   bar / notch / dynamic island so the pill never gets cut off when the
-   iframe sticks to the device top. On desktop env() is 0. */
+   Top offset accounts for the device safe-area:
+     - Standalone (scrolly.html opened directly): --safe-top is unset,
+       so the fallback env(safe-area-inset-top) kicks in.
+     - Embedded (in article.html iframe): the parent reads
+       env(safe-area-inset-top) on its side and posts the value to us
+       via postMessage; scrolly.js sets --safe-top accordingly.
+       env() in iframes always returns 0 — that's why we need the var. */
 #period-pill {
   position: absolute;
-  top: calc(24px + env(safe-area-inset-top, 0px));
+  top: calc(24px + var(--safe-top, env(safe-area-inset-top, 0px)));
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
@@ -316,7 +320,7 @@ html, body {
   #period-pill {
     /* Add the device safe-area so the pill clears the iOS status bar /
        Android notch even when the scrolly iframe sticks to device top. */
-    top: calc(12px + env(safe-area-inset-top, 0px));
+    top: calc(12px + var(--safe-top, env(safe-area-inset-top, 0px)));
     font-size: 12px;
     padding: 7px 12px;
     gap: 8px;

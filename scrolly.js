@@ -170,7 +170,9 @@ async function init() {
     minZoom: 2,
     maxZoom: 12,
     interactive: false,
-    attributionControl: { compact: true },
+    // No built-in attribution control — we render 'Data: JRC. Kaart:
+    // Protomaps / OSM.' ourselves in the legend footer.
+    attributionControl: false,
   });
 
   map.on("load", () => {
@@ -302,6 +304,14 @@ async function init() {
         if (event.data?.type === "step" && typeof event.data.index === "number") {
           const step = STEPS[event.data.index];
           if (step) applyStep(step);
+        } else if (event.data?.type === "safeArea" && typeof event.data.top === "number") {
+          // Parent article reads env(safe-area-inset-top) — which is 0
+          // inside cross-document iframes — and forwards the value here.
+          // We expose it as --safe-top so the period-pill CSS can use it.
+          document.documentElement.style.setProperty(
+            "--safe-top",
+            event.data.top + "px"
+          );
         }
       });
     } else {

@@ -40,6 +40,11 @@
   --max-prose: 720px;
   --max-wide: 1100px;
 
+  /* Exposed to JS via getComputedStyle so article.js can read the
+     device safe-area-inset-top and forward it to the scrolly iframe
+     via postMessage (env() returns 0 inside cross-document iframes). */
+  --device-safe-top: env(safe-area-inset-top, 0px);
+
   --font-body: "Roobert", Helvetica, Arial, sans-serif;
   --font-display: "Roobert", Helvetica, Arial, sans-serif;
 }
