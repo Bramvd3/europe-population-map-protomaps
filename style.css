@@ -1,15 +1,45 @@
 /* ============================================================
-   CORRECTIV-style embed map — full-viewport with overlay panels
+   Interactive embed — full-viewport map with overlay panels
    ============================================================ */
+
+@font-face {
+  font-family: "Roobert";
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/Roobert-Regular.woff2") format("woff2"),
+       url("assets/fonts/Roobert-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "Roobert";
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/Roobert-Medium.woff2") format("woff2"),
+       url("assets/fonts/Roobert-Medium.woff") format("woff");
+}
+@font-face {
+  font-family: "Roobert";
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/Roobert-SemiBold.woff2") format("woff2"),
+       url("assets/fonts/Roobert-SemiBold.woff") format("woff");
+}
+
+:root {
+  --vrt-accent: #5541F0;          /* primary purple */
+  --ink: #031037;                 /* body text / headings */
+  --ink-soft: #5a5a6f;            /* secondary text */
+  --rule: #e6e6ec;                /* dividers */
+}
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-               "Helvetica Neue", Arial, sans-serif;
+  font-family: "Roobert", Helvetica, Arial, sans-serif;
+  color: var(--ink);
   background: #fff;
+  -webkit-font-smoothing: antialiased;
 }
 
 #map {
@@ -21,13 +51,15 @@ html, body {
 
 /* Common look for the three overlay panels (controls / popup / legend) */
 .map-overlay-element {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
-  padding: 10px 12px;
-  color: #222;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(3, 16, 55, 0.10);
+  padding: 12px 14px;
+  color: var(--ink);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 /* --- Top-left: period buttons + mode toggle --- */
@@ -43,6 +75,8 @@ html, body {
   margin: 0 0 8px 0;
   font-weight: 600;
   font-size: 14px;
+  color: var(--ink);
+  letter-spacing: -0.005em;
 }
 
 /* --- 2-handle range slider (noUiSlider) --- */
@@ -50,18 +84,18 @@ html, body {
   margin: 22px 12px 38px;   /* room above for tooltips, below for pip labels */
 }
 .noUi-target {
-  background: #e9e9e9;
+  background: rgba(3, 16, 55, 0.08);
   border: none;
   box-shadow: none;
   height: 4px;
 }
 .noUi-connect {
-  background: #6e8b3e;
+  background: var(--vrt-accent);
 }
 .noUi-handle {
-  background: #2a2a2a;
-  border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  background: var(--ink);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(3, 16, 55, 0.25);
   border-radius: 50%;
   width: 14px !important;
   height: 14px !important;
@@ -72,12 +106,14 @@ html, body {
 .noUi-handle::before, .noUi-handle::after { display: none; }
 .noUi-tooltip {
   font-size: 11px;
-  padding: 2px 5px;
-  background: #2a2a2a;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: var(--ink);
   color: #fff;
   border: none;
-  border-radius: 3px;
+  border-radius: 4px;
   bottom: 140%;
+  font-variant-numeric: tabular-nums;
 }
 .noUi-pips-horizontal {
   height: 24px;
@@ -85,22 +121,26 @@ html, body {
 }
 .noUi-marker-horizontal.noUi-marker {
   height: 4px;
-  background: #ccc;
+  background: rgba(3, 16, 55, 0.18);
 }
 .noUi-value {
   font-size: 10px;
-  color: #555;
+  color: var(--ink-soft);
   margin-top: 4px;
 }
 
 .mode-row {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   font-size: 12px;
-  color: #555;
+  color: var(--ink-soft);
 }
 .mode-row label { cursor: pointer; user-select: none; }
-.mode-row input { vertical-align: middle; margin-right: 3px; }
+.mode-row input {
+  vertical-align: middle;
+  margin-right: 4px;
+  accent-color: var(--vrt-accent);
+}
 
 /* --- Bottom-left: click popup with the trend chart --- */
 #chart-panel-wrapper {
@@ -120,19 +160,20 @@ html, body {
   top: -6px;
   right: -4px;
   font-size: 20px;
-  color: #888;
+  color: var(--ink-soft);
   cursor: pointer;
   text-decoration: none;
   line-height: 1;
 }
-#close-button:hover { color: #222; }
+#close-button:hover { color: var(--vrt-accent); }
 
 .info-sentence {
   margin: 0 0 6px 0;
   font-size: 13px;
-  color: #333;
+  color: var(--ink);
+  line-height: 1.45;
 }
-.info-sentence strong { color: #111; }
+.info-sentence strong { color: var(--ink); font-weight: 600; }
 
 #popup_chart svg {
   display: block;
@@ -159,19 +200,45 @@ html, body {
 }
 
 .legend-number {
-  font-size: 8px;
-  fill: #555;
+  font-size: 9px;
+  font-family: "Roobert", Helvetica, Arial, sans-serif;
+  fill: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* D3 chart inside the popup: VRT ink line with a small purple accent on
+   the endpoint dots. Endpoint labels use the same ink-soft as the legend. */
+#popup_chart svg {
+  font-family: "Roobert", Helvetica, Arial, sans-serif;
+}
+#popup_chart .endpoint-label {
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+#popup_chart .domain,
+#popup_chart .tick line {
+  stroke: rgba(3, 16, 55, 0.18);
+}
+#popup_chart .tick text {
+  fill: var(--ink-soft);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
 }
 
 #map-footer {
   font-size: 10px;
-  color: #555;
-  line-height: 1.3;
+  color: var(--ink-soft);
+  line-height: 1.35;
+  margin-top: 4px;
 }
 #map-footer a {
-  color: #555;
-  text-decoration: underline;
+  color: var(--ink-soft);
+  text-decoration: underline solid var(--vrt-accent) 1px;
+  text-underline-offset: 2px;
 }
+#map-footer a:hover { color: var(--vrt-accent); }
 
 /* MapLibre attribution: small + unobtrusive in the bottom-right */
 .maplibregl-ctrl-attrib {

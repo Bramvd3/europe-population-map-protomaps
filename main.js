@@ -526,27 +526,31 @@ function renderTrendChart(series) {
   g.append("path")
     .datum(series)
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", 2.5)
+    .attr("stroke", "#031037")
+    .attr("stroke-width", 2)
+    .attr("stroke-linecap", "round")
+    .attr("stroke-linejoin", "round")
     .attr("d", line);
 
-  // Endpoint labels + dots
+  // Endpoint labels + dots — VRT purple dots over an ink-dark line.
   const first = series[0], last = series[series.length - 1];
   g.append("text")
     .attr("class", "endpoint-label")
     .attr("text-anchor", "end")
-    .attr("x", x(first.year) - 4)
+    .attr("x", x(first.year) - 6)
     .attr("y", y(first.pop) + 4)
     .text(first.pop.toLocaleString());
   g.append("text")
     .attr("class", "endpoint-label")
     .attr("text-anchor", "start")
-    .attr("x", x(last.year) + 4)
+    .attr("x", x(last.year) + 6)
     .attr("y", y(last.pop) + 4)
     .text(last.pop.toLocaleString());
 
-  g.append("circle").attr("r", 3).attr("cx", x(first.year)).attr("cy", y(first.pop)).attr("fill", "steelblue");
-  g.append("circle").attr("r", 3).attr("cx", x(last.year)).attr("cy", y(last.pop)).attr("fill", "steelblue");
+  g.append("circle").attr("r", 3.5).attr("cx", x(first.year)).attr("cy", y(first.pop))
+    .attr("fill", "#5541F0").attr("stroke", "#fff").attr("stroke-width", 1.5);
+  g.append("circle").attr("r", 3.5).attr("cx", x(last.year)).attr("cy", y(last.pop))
+    .attr("fill", "#5541F0").attr("stroke", "#fff").attr("stroke-width", 1.5);
 }
 
 // ---- Legend ---------------------------------------------------------------
