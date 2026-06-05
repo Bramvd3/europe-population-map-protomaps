@@ -1,19 +1,15 @@
 /* ============================================================
-   CORRECTIV-style embed: MapLibre map + D3 popup + D3 legend.
-
-   Same data, same bins, same fallback logic as the parent Streamlit app
-   — just rendered with MapLibre/D3 instead of Plotly so it's lightweight
-   enough to drop into an article <iframe>.
+   Interactive embed: MapLibre map + D3 popup + D3 legend.
    ============================================================ */
 
 const ALL_YEARS = [1961, 1971, 1981, 1991, 2001, 2011, 2021, 2024];
 
-// Same 10 fixed bins as the parent app, in user-specified value space.
+// 10 fixed bins (slider-period agnostic).
 const PCT_BINS = [-25, -15, -8, -3, 0, 5, 15, 35, 75];
 const ABS_BINS = [-20000, -10000, -5000, -1000, 0, 1000, 5000, 10000, 20000];
 
-// CORRECTIV's discrete diverging palette — 10 colours (5 red + 5 green,
-// skipping the cream centre so 0 is a clean red→green boundary).
+// Discrete diverging palette — 10 colours (5 red + 5 green, skipping the
+// cream centre so 0 is a clean red→green boundary).
 const COLORS = [
   "#d46780", // 0 darkest red   — ≤−80% / ≤−20k
   "#df91a3", // 1
@@ -67,13 +63,13 @@ function formatAbsLabel(v) {
 }
 
 // ---- Paint expression for the choropleth ---------------------------------
-// MVT properties carry the full pop_1961…pop_2024 series, so the fill colour
-// is computed entirely in the paint expression — one setPaintProperty call
-// instead of 107 k setFeatureState iterations on every slider change.
+// MVT properties carry the full pop_1961…pop_2024 series, so the fill
+// colour is computed entirely in the paint expression — one
+// setPaintProperty call per slider/mode change, not a per-LAU loop.
 //
-// For UK gemeenten pop_2024 is null (the JRC dataset stops at 2021 for the
-// UK). When the user has yearB=2024 selected we coalesce to pop_2021 so the
-// UK still gets a colour. For other year requests we read straight.
+// For UK gemeenten pop_2024 is null (the JRC dataset stops at 2021 for
+// the UK). When yearB=2024 we coalesce to pop_2021 so the UK still gets
+// a colour. All other years are straight property reads.
 function getPopExpr(year) {
   if (year === 2024) {
     return ["coalesce", ["get", "pop_2024"], ["get", "pop_2021"]];
@@ -128,11 +124,9 @@ function buildFillExpr(yA, yB, modeStr) {
 const PROTOMAPS_KEY = "d3b78e1318dd7bcb";
 const PROTOMAPS_FLAVOR = "white";    // try: light, dark, white, black, grayscale, contrast
 
-// Fall back to OpenFreeMap when no Protomaps key has been pasted in. Unlike
-// the MapTiler embed we don't blacklist localhost here, because the user has
-// the Protomaps key's CORS allowlist set to `*` while iterating — so tiles
-// load fine from a 127.0.0.1 dev server. Tighten the allowlist before going
-// to production.
+// Fall back to OpenFreeMap (free, no key) when no Protomaps key has been
+// pasted in — useful for local dev. Make sure the Protomaps key's CORS
+// allowlist matches the deployment origin before going to production.
 const USE_PROTOMAPS = PROTOMAPS_KEY !== "PASTE_YOUR_PROTOMAPS_KEY_HERE";
 
 function buildProtomapsStyle() {
@@ -199,10 +193,6 @@ async function init() {
   const protocol = new pmtiles.Protocol();
   maplibregl.addProtocol("pmtiles", protocol.tile);
 
-  // No more data.json: every pop_YEAR value lives in lau-scrolly.pmtiles
-  // as an MVT property, so the paint expression can compute the bin
-  // itself and the popup reads the series straight off feature.properties.
-
   map = new maplibregl.Map({
     container: "map",
     style: MAP_STYLE,
@@ -247,8 +237,7 @@ async function init() {
     // continental-zoom view doesn't get crowded with small-town labels.
     // Each place feature carries a `min_zoom` (the zoom from which
     // Protomaps would naturally start showing it). We require the
-    // current zoom to be ≥ that value + LABEL_DELAY. Tweak up to hide
-    // more, down to show more.
+    // current zoom to be ≥ that value + LABEL_DELAY.
     const LABEL_DELAY = 2;
     ["places_locality", "places_subplace", "places_region"].forEach(id => {
       if (!map.getLayer(id)) return;
@@ -340,8 +329,6 @@ function updateMap() {
 }
 
 function updateTitle() {
-  // Static Dutch title — the period is communicated by the slider tooltips
-  // and by the trend-chart sentence in the popup.
   document.getElementById("period-title").textContent = "Bevolkingsevolutie in Europa";
 }
 
@@ -368,8 +355,8 @@ function setupYearSlider() {
     },
   });
 
-  // Title is static now — period is communicated by the slider tooltips +
-  // popup sentence — so we no longer rewrite it while dragging.
+  // Title is static — period is communicated by the slider tooltips and
+  // by the trend-chart sentence in the popup.
 
   // On release, swap the fill expression + re-render the currently-shown
   // popup if any. Cheap — no per-feature JS loop.
@@ -531,8 +518,8 @@ function renderTrendChart(series) {
   const x = d3.scaleLinear()
     .domain([series[0].year, series[series.length - 1].year])
     .range([0, innerW]);
-  // Y-axis starts at 0 (same as CORRECTIV) so a rising/falling line can be
-  // judged against the absolute population, not just the visible range.
+  // Y-axis starts at 0 so a rising/falling line can be judged against
+  // the absolute population, not just the visible range.
   const y = d3.scaleLinear()
     .domain([0, d3.max(series, d => d.pop)]).nice()
     .range([innerH, 0]);
@@ -554,7 +541,7 @@ function renderTrendChart(series) {
     .attr("stroke-linejoin", "round")
     .attr("d", line);
 
-  // Endpoint labels + dots — VRT purple dots over an ink-dark line.
+  // Endpoint labels + dots
   const first = series[0], last = series[series.length - 1];
   g.append("text")
     .attr("class", "endpoint-label")

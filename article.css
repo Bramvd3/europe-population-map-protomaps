@@ -1,11 +1,10 @@
 /* ============================================================
-   VRT NWS article styling. Tokens reverse-engineered from
-   interactief.vrtnws.be's published CSS:
-     --basevio  #5541F0  — primary purple
-     --darkvio  #031037  — body text + headings (near-black, blue-tinted)
-     --coltyp3  #4031AE  — darker purple for the footer gradient
-   Font is Roobert (Roobert-Regular / -Medium / -SemiBold), served
-   from VRT's CDN. Free fallback chain to Helvetica/Arial.
+   Article styling.
+     --vrt-accent       #5541F0  — primary purple
+     --vrt-accent-dark  #4031AE  — gradient anchor for the footer
+     --ink              #031037  — body text + headings (near-black)
+   Font: Roobert (Regular / Medium / SemiBold), bundled under
+   assets/fonts. Fallback chain: Helvetica / Arial.
    ============================================================ */
 
 @font-face {
@@ -299,9 +298,7 @@ a:hover {
 .interactive__caption strong { color: var(--ink); }
 
 /* ============================================================
-   VRT NWS CREDIT FOOTER (45° purple gradient, white text)
-   Matches their #creditcontainer styling: padding 8rem 2rem, max-width
-   1040px, gradient from #4031AE → #5541F0.
+   CREDIT FOOTER (45° purple gradient, white text)
    ============================================================ */
 #creditcontainer {
   margin-top: 10rem;

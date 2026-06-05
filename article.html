@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <!--
-  Article page combining the scrolly + the interactive embed, styled in
-  the spirit of vrtnws.be. Body lives in the normal page flow; the
-  scrolly section uses a sticky iframe overlaid by floating text cards
-  (driven by IntersectionObserver → postMessage to the iframe). The
-  interactive embed appears as a regular iframe near the end so the
-  reader can explore the data themselves.
+  Article page combining the scrolly + the interactive embed. Body lives
+  in the normal page flow; the scrolly section uses a sticky iframe
+  overlaid by floating text cards (driven by IntersectionObserver →
+  postMessage to the iframe). The interactive embed appears as a regular
+  iframe near the end so the reader can explore the data themselves.
 -->
 <html lang="nl">
 <head>
@@ -17,7 +16,7 @@
   <link rel="stylesheet" href="article.css">
 </head>
 <body>
-  <!-- ===== VRT NWS top bar (logo only, left aligned) ===== -->
+  <!-- ===== Top bar ===== -->
   <header class="site-header">
     <a href="https://vrtnws.be" class="brand" target="_blank" rel="noopener" aria-label="VRT NWS">
       <img src="assets/vrtnws-logo.png" alt="VRT NWS">
@@ -318,7 +317,7 @@
 
   </article>
 
-  <!-- ===== VRT NWS credit footer ===== -->
+  <!-- ===== Credit footer ===== -->
   <div id="creditcontainer">
     <div id="creditcenter">
       <a href="https://vrtnws.be" class="headerlogo footerlogo" target="_blank" rel="noopener">

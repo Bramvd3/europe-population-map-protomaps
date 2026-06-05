@@ -1,30 +1,23 @@
 <!DOCTYPE html>
 <!--
-  Scrollytelling companion to the Protomaps embed.
+  Scrollytelling page.
 
-  Layout B: full-bleed sticky map at z=0. Floating text cards on top
-  (z=1). Scrollama detects which card is in view and the JS replays the
-  story: fly the map, swap the period, highlight a focus region, optionally
+  Full-bleed sticky map at z=0, floating text cards on top (z=1).
+  Scrollama detects which card is in view and the JS replays the story:
+  fly the map, swap the period, highlight a focus region, optionally
   open the D3 popup for a single LAU.
-
-  Reuses the same lau.pmtiles + data.json as the main embed — keeps the
-  Protomaps basemap, the same colour palette, and the same chart code.
 -->
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <!-- viewport-fit=cover lets env(safe-area-inset-*) evaluate to the
-       actual device safe-area on iOS Safari (notch / dynamic island /
-       Android status bar). Used by scrolly.css to push the period pill
-       below the status bar when the iframe sticks to the device top. -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Hoe Europa kromp én groeide — een gemeentelijke geschiedenis</title>
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="scrolly.css">
   <!-- Tag <html class="embedded"> before the body parses so the intro card
-       (and any other story content) is hidden by CSS immediately, instead
-       of flashing for the moment between HTML render and map-load. -->
+       is hidden by CSS immediately, instead of flashing for the moment
+       between HTML render and map-load. -->
   <script>
     if (new URLSearchParams(location.search).get("embed") === "1") {
       document.documentElement.classList.add("embedded");

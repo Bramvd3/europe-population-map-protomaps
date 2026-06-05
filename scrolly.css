@@ -24,9 +24,7 @@ html, body {
 
 /* When loaded inside an article iframe (scrolly.html?embed=1) the cards
    live in the parent article — hide them inside the iframe. Period pill,
-   legend, and chart panel stay visible (those are map-overlay UI).
-   Class is set both on <html> (inline script in <head>, before render)
-   and later on <body> (after map load) — so this selector hits early. */
+   legend, and chart panel stay visible (those are map-overlay UI). */
 .embedded #story { display: none; }
 
 /* ---- Sticky map container --------------------------------------------- */
@@ -56,8 +54,7 @@ html, body {
 /* ---- Period pill (top-center, updated by JS) --------------------------
    On mobile, env(safe-area-inset-top) gives the height of the status
    bar / notch / dynamic island so the pill never gets cut off when the
-   iframe sticks to the device top. On desktop env() is 0, so the offset
-   stays at 24px. */
+   iframe sticks to the device top. On desktop env() is 0. */
 #period-pill {
   position: absolute;
   top: calc(24px + env(safe-area-inset-top, 0px));
@@ -317,9 +314,8 @@ html, body {
   .step p { font-size: 14px; }
 
   #period-pill {
-    /* Status bar / notch on iOS Safari can be up to ~59px. Keep 12px
-       breathing room below it. env() returns 0 on devices without a
-       safe-area, so the pill sits at 12px from the top there. */
+    /* Add the device safe-area so the pill clears the iOS status bar /
+       Android notch even when the scrolly iframe sticks to device top. */
     top: calc(12px + env(safe-area-inset-top, 0px));
     font-size: 12px;
     padding: 7px 12px;

@@ -258,7 +258,6 @@ html, body {
    Legend steps aside when the popup is open so the two don't overlap.
    ============================================================ */
 @media (max-width: 720px) {
-  /* Top strip: period title + year slider, full width */
   #period-buttons {
     left: 8px;
     right: 8px;
@@ -274,29 +273,18 @@ html, body {
   #year-slider {
     margin: 18px 8px 32px;
   }
-  .noUi-tooltip {
-    font-size: 10px;
-  }
-  .noUi-value {
-    font-size: 9px;
-  }
+  .noUi-tooltip { font-size: 10px; }
+  .noUi-value { font-size: 9px; }
 
-  /* Bottom-left: popup, full width */
   #chart-panel-wrapper {
     left: 8px;
     right: 8px;
     bottom: 8px;
     max-width: none;
   }
-  #popup_chart svg {
-    height: 110px;
-  }
-  .info-sentence {
-    font-size: 12.5px;
-  }
+  #popup_chart svg { height: 110px; }
+  .info-sentence { font-size: 12.5px; }
 
-  /* Bottom-right: legend, full width — but step aside when the popup
-     is open (mobile can't fit both on the same row). */
   #map-legend-wrapper {
     left: 8px;
     right: 8px;
@@ -307,9 +295,5 @@ html, body {
     display: none;
   }
 
-  /* The MapLibre attribution would otherwise sit on top of the legend
-     band on small screens — push it up a hair. */
-  .maplibregl-ctrl-bottom-right {
-    bottom: 4px;
-  }
+  .maplibregl-ctrl-bottom-right { bottom: 4px; }
 }

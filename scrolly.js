@@ -1,21 +1,16 @@
 /* ============================================================
-   Scrollytelling controller — Option C edition.
+   Scrollytelling controller.
 
-   Compared to the interactive embed (which uses lau.pmtiles + data.json),
-   this scrolly uses lau-scrolly.pmtiles. That PMTiles has every LAU's full
-   1961–2024 population series baked in as feature properties, so we can:
-     * compute the choropleth's bin entirely in the paint expression
-       (no JS-side feature-state, no refreshBins iterating 107k LAUs)
-     * read the popup chart's data straight off feature.properties
-     * skip the 17 MB data.json fetch altogether — no loading overlay
-   The price is a heavier PMTiles file (93 MB vs 44), but the browser only
-   fetches the byte-ranges for tiles currently in view, so the actual data
-   over the wire is smaller than the data.json+lau.pmtiles combo.
+   The lau-scrolly.pmtiles served at runtime has every LAU's full
+   1961–2024 population series baked in as feature properties, so the
+   choropleth's bin is computed entirely in the paint expression (no
+   JS-side feature-state iteration), and the popup chart's data is read
+   straight off feature.properties.
    ============================================================ */
 
 const ALL_YEARS = [1961, 1971, 1981, 1991, 2001, 2011, 2021, 2024];
 
-// Same 10 bins / colours as the interactive embed.
+// 10 bins / colours.
 const PCT_BINS = [-25, -15, -8, -3, 0, 5, 15, 35, 75];
 const COLORS = [
   "#d46780", "#df91a3", "#e8acb3", "#f0c6c3", "#f7e1d4",
@@ -119,9 +114,9 @@ function findCountryBorderLayer() {
 // Pure paint-expression bin computation: takes pop_yearA / pop_yearB straight
 // from feature properties, computes pct, then steps through PCT_BINS to pick
 // a colour. setPaintProperty('lau-fill', 'fill-color', buildFillExpr(...))
-// is the only thing we need to do when the period changes — no JS loop over
-// 107k features, no feature-state.
-// UK gemeenten have no pop_2024 (JRC's dataset stops at 2021 there). For
+// is the only thing we do when the period changes — no JS-side iteration.
+//
+// UK gemeenten have no pop_2024 (the JRC dataset stops at 2021 there). For
 // any step that uses 2024 as an endpoint we coalesce to 2021 so the UK
 // still gets a colour. All other years are straight lookups.
 function getPopExpr(year) {
@@ -195,10 +190,9 @@ async function init() {
     // Push city / hamlet labels later than Protomaps' defaults so a
     // continental-zoom view of Europe (or a national-zoom view of
     // Belgium) doesn't get crowded with small-town labels. Each place
-    // feature carries a `min_zoom` (the zoom from which Protomaps would
-    // naturally start showing it). We require the current zoom to be
-    // ≥ that value + LABEL_DELAY. Tweak LABEL_DELAY up to hide more,
-    // down to show more.
+    // feature carries a `min_zoom` (the zoom from which Protomaps
+    // would naturally start showing it). We require the current zoom
+    // to be ≥ that value + LABEL_DELAY.
     const LABEL_DELAY = 2;
     ["places_locality", "places_subplace", "places_region"].forEach(id => {
       if (!map.getLayer(id)) return;
@@ -554,9 +548,7 @@ function showMultiPopup(giscoIds) {
 }
 
 // ---- Legend (D3) -------------------------------------------------------
-// Thin horizontal strip: a 6-px band of colour bands plus boundary
-// labels underneath. Matches the interactive embed (main.js) and the
-// mockup, and takes a lot less vertical space than the old 30-px swatches.
+// Thin horizontal strip — same look as the interactive embed (main.js).
 function drawLegend() {
   const el = d3.select("#map_legend");
   el.selectAll("*").remove();
@@ -591,8 +583,7 @@ function applyStep(step) {
   if (periodChanged) {
     currentYearA = step.yearA;
     currentYearB = step.yearB;
-    // Single paint-property update re-evaluates the fill for every visible
-    // LAU. No more refreshBins() iterating all 107k features.
+    // One paint-property update re-evaluates the fill for every visible LAU.
     map.setPaintProperty("lau-fill", "fill-color", buildFillExpr(currentYearA, currentYearB));
     updatePeriodPill();
   }

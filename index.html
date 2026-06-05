@@ -1,14 +1,4 @@
 <!DOCTYPE html>
-<!--
-  CORRECTIV-style embed map of European population change.
-
-  Pure HTML/JS/CSS — no build step. Loads MapLibre GL JS + D3 from CDN,
-  fetches lau.geojson, data.json and countries.geojson from ./data/ (which
-  are symlinks to ../static/* so we never duplicate the heavy data files).
-
-  Serve with:  python -m http.server 8000   (from this folder)
-  Or drop the folder behind any static file host and embed in an <iframe>.
--->
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
@@ -26,7 +16,7 @@
   <div id="period-buttons" class="map-overlay-element">
     <p id="period-title">Bevolkingsevolutie in Europa</p>
     <div id="year-slider"></div>
-    <!-- mode-row is hidden via CSS — the code paths for "abs" still work,
+    <!-- mode-row is hidden via CSS — code paths for "abs" still work,
          we just don't expose the toggle in the UI. -->
     <div class="mode-row" hidden>
       <label><input type="radio" name="mode" value="pct" checked> % verandering</label>
@@ -63,8 +53,6 @@
 
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
-  <!-- Protomaps theme layers (light/dark/white/black/grayscale/contrast).
-       Exports global `protomaps_themes_base.layers(sourceName, flavor)`. -->
   <script src="https://unpkg.com/protomaps-themes-base@4.5.0/dist/protomaps-themes-base.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
