@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockup — palet-vergelijking</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Top-right palette toggle, lives only on this mockup page. */
+    #palette-toggle {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 5;
+      width: 260px;
+    }
+    #palette-toggle .palette-title {
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+    #palette-toggle label {
+      display: block;
+      font-size: 12.5px;
+      color: var(--ink);
+      padding: 4px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    #palette-toggle input {
+      vertical-align: middle;
+      margin-right: 6px;
+      accent-color: var(--vrt-accent);
+    }
+    #palette-toggle .swatches {
+      display: flex;
+      margin-top: 3px;
+      margin-left: 22px;
+      margin-bottom: 2px;
+      height: 8px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #palette-toggle .swatches span {
+      flex: 1;
+    }
+    #palette-toggle .note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Period slider, top-left -->
+  <div id="period-buttons" class="map-overlay-element">
+    <p id="period-title">Bevolkingsevolutie</p>
+    <div id="year-slider"></div>
+    <div class="mode-row" hidden>
+      <label><input type="radio" name="mode" value="pct" checked> % verandering</label>
+      <label><input type="radio" name="mode" value="abs"> Δ bevolking</label>
+    </div>
+  </div>
+
+  <!-- Palette toggle, top-right (mockup-only) -->
+  <div id="palette-toggle" class="map-overlay-element">
+    <p class="palette-title">Kleurenpalet</p>
+
+    <label>
+      <input type="radio" name="palette" value="A" checked>
+      A — Bruin ↔ Petrol
+    </label>
+    <div class="swatches" data-palette="A"></div>
+
+    <label>
+      <input type="radio" name="palette" value="B">
+      B — Oranje ↔ VRT-paars
+    </label>
+    <div class="swatches" data-palette="B"></div>
+
+    <label>
+      <input type="radio" name="palette" value="C">
+      C — Roze ↔ Groen
+    </label>
+    <div class="swatches" data-palette="C"></div>
+
+    <p class="note">
+      Bins (voorstel 2): −25, −15, −8, −3, 0, 5, 15, 35, 75%.
+      Sleep de slider om een andere periode te kiezen.
+    </p>
+  </div>
+
+  <!-- Popup -->
+  <div id="chart-panel-wrapper">
+    <div id="chart-panel" class="map-overlay-element" style="display: none;">
+      <div id="data-popup">
+        <a id="close-button">×</a>
+        <p class="info-sentence" id="info-sentence"></p>
+        <div id="popup_chart"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend + attribution, bottom-right -->
+  <div id="map-legend-wrapper">
+    <div class="map-overlay-element">
+      <div id="map_legend"></div>
+      <div id="map-footer">
+        Data:
+        <a href="https://data.jrc.ec.europa.eu/dataset/37fcacbf-12e2-4b31-b1af-83117a74b2c7"
+           target="_blank" rel="noopener">JRC</a>.
+        Kaart:
+        <a href="https://protomaps.com" target="_blank" rel="noopener">Protomaps</a>
+        /
+        <a href="https://openstreetmap.org" target="_blank" rel="noopener">OSM</a>.
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+  <script src="https://unpkg.com/protomaps-themes-base@4.5.0/dist/protomaps-themes-base.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+  <script type="module" src="mockup-palettes.js"></script>
+</body>
+</html>
