@@ -480,9 +480,12 @@ function showPopup(featureOrGiscoId) {
   }
   document.getElementById("info-sentence").innerHTML = sentence;
 
-  // Line chart from the eight census years that have data — for the UK
-  // that naturally tops out at 2021, no special-case needed.
+  // Line chart between the slider's effective endpoints — so picking
+  // 2001 → 2024 on the slider draws the chart from 2001 to 2024, not
+  // the full 1961-2024 series. eya/eyb already handle the UK 2024→2021
+  // fallback so a UK municipality with slider on 2024 ends at 2021.
   const series = ALL_YEARS
+    .filter(y => y >= eya && y <= eyb)
     .map(y => ({ year: y, pop: props["pop_" + y] }))
     .filter(d => d.pop != null);
 
