@@ -209,7 +209,9 @@ async function init() {
     // Scrolly-specific LAU source — properties include pop_1961…pop_2024.
     map.addSource("lau", {
       type: "vector",
-      url: "pmtiles://data/lau-scrolly.pmtiles",
+      // scrolly.js lives in /scrolly/, the PMTiles in /data/. Go up
+      // one directory to reach the shared data folder.
+      url: "pmtiles://../data/lau-scrolly.pmtiles",
     });
     const beforeId = borderLayerId ?? undefined;
 

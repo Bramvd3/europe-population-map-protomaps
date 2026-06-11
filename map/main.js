@@ -259,7 +259,9 @@ async function init() {
       // rebuild_lau_scrolly_pmtiles.py). The paint expression on lau-fill
       // computes the bin entirely from feature properties — no JS-side
       // setFeatureState iteration is needed when the slider/mode changes.
-      url: "pmtiles://data/lau-scrolly.pmtiles",
+      // main.js lives in /map/, the PMTiles in /data/. Go up one
+      // directory to reach the shared data folder.
+      url: "pmtiles://../data/lau-scrolly.pmtiles",
     });
     // If the basemap exposes a country-border layer we pass its id as
     // `beforeId` so MapLibre inserts our choropleth *under* it (so the borders
