@@ -44,8 +44,15 @@ webapp/
 ├── assets/
 │   ├── vrtnws-logo.png       ← gebruikt in de header
 │   ├── vrtnws-logo-white.png ← gebruikt in de footer-gradient
-│   └── fonts/
-│       └── Roobert-{Regular,Medium,SemiBold}.{woff2,woff}
+│   ├── fonts/
+│   │   └── Roobert-{Regular,Medium,SemiBold}.{woff2,woff}
+│   └── vendor/               ← lokaal gehoste libraries (geen externe CDN's)
+│       ├── maplibre-gl.{css,js}        ← 4.7.1
+│       ├── pmtiles.js                  ← 3.2.0
+│       ├── protomaps-themes-base.js    ← 4.5.0
+│       ├── d3.min.js                   ← v7
+│       ├── nouislider.min.{css,js}     ← 15.7.1
+│       └── scrollama.min.js            ← 3.2.0
 │
 └── data/
     └── lau-scrolly.pmtiles   ← ~89 MB, bevat gemeente-geometries + pop_1961…pop_2024
